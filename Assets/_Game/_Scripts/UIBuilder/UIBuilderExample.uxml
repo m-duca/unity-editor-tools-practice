@@ -1,10 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
-<ui:UXML
-    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xmlns:ui="UnityEngine.UIElements"
-    xmlns:uie="UnityEditor.UIElements"
-    xsi:noNamespaceSchemaLocation="../../../../UIElementsSchema/UIElements.xsd"
->
-    <ui:Label text="Hello World! From UXML" />
-
+<ui:UXML xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" noNamespaceSchemaLocation="../../../../UIElementsSchema/UIElements.xsd" editor-extension-mode="False">
+    <ui:Label text="Texto de Exemplo..." style="justify-content: flex-start; -unity-text-align: upper-center; -unity-font-style: bold; visibility: visible;" />
+    <ui:Button text="Clique em mim!" style="align-self: auto; justify-content: flex-start; padding-top: 20px; padding-bottom: 20px; padding-right: 16px; padding-left: 16px; position: absolute; top: 200px; left: 100px;" />
 </ui:UXML>

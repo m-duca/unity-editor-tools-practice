@@ -4,8 +4,7 @@ using UnityEngine.UIElements;
 
 public class UIBuilderExample : EditorWindow
 {
-    [SerializeField]
-    private VisualTreeAsset m_VisualTreeAsset = default;
+    [SerializeField] private VisualTreeAsset _visualTreeAsset = default;
 
     [MenuItem("Window/UI Toolkit/UIBuilderExample")]
     public static void ShowExample()
@@ -19,12 +18,8 @@ public class UIBuilderExample : EditorWindow
         // Each editor window contains a root VisualElement object
         VisualElement root = rootVisualElement;
 
-        // VisualElements objects can contain other VisualElement following a tree hierarchy.
-        VisualElement label = new Label("Hello World! From C#");
-        root.Add(label);
-
         // Instantiate UXML
-        VisualElement labelFromUXML = m_VisualTreeAsset.Instantiate();
+        VisualElement labelFromUXML = _visualTreeAsset.Instantiate();
         root.Add(labelFromUXML);
     }
 }
