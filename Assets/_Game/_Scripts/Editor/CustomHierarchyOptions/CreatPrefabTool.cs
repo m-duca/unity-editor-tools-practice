@@ -3,6 +3,9 @@ using UnityEngine;
 
 namespace EditorToolsPractice
 {
+    /// <summary>
+    /// Atalho para criaçãoo de um prefab a partir de um gameObject da hierarquia
+    /// </summary>
     [InitializeOnLoad]
     public class CreatePrefabTool : Editor
     {

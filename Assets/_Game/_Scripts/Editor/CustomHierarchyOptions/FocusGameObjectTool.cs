@@ -3,10 +3,13 @@ using UnityEngine;
 
 namespace EditorToolsPractice
 {
+    /// <summary>
+    /// Atalho para focar a visualização na scene view em um game object
+    /// </summary>
     [InitializeOnLoad]
-    public class GameObjectFocusTool : MonoBehaviour
+    public class FocusGameObjectTool : MonoBehaviour
     {
-        static GameObjectFocusTool() => EditorApplication.hierarchyWindowItemOnGUI += AttachFocusButton;
+        static FocusGameObjectTool() => EditorApplication.hierarchyWindowItemOnGUI += AttachFocusButton;
 
         private static void AttachFocusButton(int id, Rect rect)
         {
