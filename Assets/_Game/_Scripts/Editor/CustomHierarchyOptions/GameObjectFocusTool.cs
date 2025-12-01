@@ -27,6 +27,7 @@ namespace EditorToolsPractice
         {
             Selection.activeGameObject = gameObject;
             SceneView.FrameLastActiveSceneView();
+            EditorGUIUtility.PingObject(gameObject);
         }
     }
 }
