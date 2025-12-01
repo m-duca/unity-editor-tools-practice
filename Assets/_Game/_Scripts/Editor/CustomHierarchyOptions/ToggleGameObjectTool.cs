@@ -3,10 +3,13 @@ using UnityEngine;
 
 namespace EditorToolsPractice
 {
+    /// <summary>
+    /// Fornece um atalho na GUI da Hierarquia para agilizar a desativação / ativação de um GameObject
+    /// </summary>
     [InitializeOnLoad]
-    public class CustomHierarchyOptions : Editor
+    public class ToggleGameObjectTool : Editor
     {
-        static CustomHierarchyOptions()
+        static ToggleGameObjectTool()
         {
             EditorApplication.hierarchyWindowItemOnGUI += HierarchyWindowItemOnGUI;            
         }
@@ -38,7 +41,7 @@ namespace EditorToolsPractice
             float width = 10;
             float height = 10;
 
-            DrawButtonWithToggle(id, rect.x - offsetX, rect.y - offsetY, rect.width, rect.height);
+            DrawButtonWithToggle(id, rect.x - offsetX, rect.y - offsetY, width, height);
         }
     }
 }
