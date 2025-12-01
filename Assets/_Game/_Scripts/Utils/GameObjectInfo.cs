@@ -8,7 +8,7 @@ namespace EditorToolsPractice
     public class GameObjectInfo : MonoBehaviour
     {
         [Header("Descrição do GameObject")]
-        [SerializeField, TextArea(1, 3)] private string _infoText;
+        [SerializeField, TextArea(2, 3)] private string _infoText;
 
         // Propriedade
         public string InfoText { get { return _infoText; } }
