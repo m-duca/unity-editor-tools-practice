@@ -9,9 +9,9 @@ namespace EditorToolsPractice
     [InitializeOnLoad]
     public class GameObjectInfoTool : Editor
     {
-        static GameObjectInfoTool() => EditorApplication.hierarchyWindowItemOnGUI += AttachInfoItemOnGUI;
+        static GameObjectInfoTool() => EditorApplication.hierarchyWindowItemOnGUI += AttachInfoButton;
 
-        private static void AttachInfoItemOnGUI(int id, Rect rect) => DrawInfoButton(id, rect);
+        private static void AttachInfoButton(int id, Rect rect) => DrawInfoButton(id, rect);
 
         private static void DrawInfoButton(int id, Rect rect)
         {

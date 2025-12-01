@@ -9,9 +9,9 @@ namespace EditorToolsPractice
     [InitializeOnLoad]
     public class ToggleGameObjectTool : Editor
     {
-        static ToggleGameObjectTool() => EditorApplication.hierarchyWindowItemOnGUI += AttachToggleItemOnGUI;
+        static ToggleGameObjectTool() => EditorApplication.hierarchyWindowItemOnGUI += AttachToggleButton;
 
-        private static void AttachToggleItemOnGUI(int id, Rect rect) => RenderButtonWithToggle(id, rect);
+        private static void AttachToggleButton(int id, Rect rect) => RenderButtonWithToggle(id, rect);
 
         private static void RenderButtonWithToggle(int id, Rect rect)
         {
