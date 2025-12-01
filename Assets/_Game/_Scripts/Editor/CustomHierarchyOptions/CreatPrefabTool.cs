@@ -17,8 +17,8 @@ namespace EditorToolsPractice
 
             if (gameObject == null) return;
 
-            float x = 198, y = 2;
-            float width = 14, height = 14;
+            float x = 198, y = 0;
+            float width = 18, height = 18;
             string createPrefabIconPath = "Icons/Spr_Icon_CreatePrefab";
             string tooltip = $"Create prefab of {gameObject.name}";
 
