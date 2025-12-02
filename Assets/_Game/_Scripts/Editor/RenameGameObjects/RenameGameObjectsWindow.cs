@@ -35,24 +35,19 @@ namespace EditorToolsPractice
             DrawStep2();
             DrawStep3();
 
+            DrawRenameButton();
+
             Repaint();
         }
-
+        
         private void DrawStep1()
         {
             EditorGUILayout.Space();
 
-            EditorGUILayout.LabelField("Passo 1: Selecione os GameObjects na Hierarquia", EditorStyles.boldLabel);
-
-            EditorGUILayout.Space();
-        }
-
-        private void DrawStep2()
-        {
             GUIStyle guiStyle = new GUIStyle(EditorStyles.foldout);
             guiStyle.fontStyle = FontStyle.Bold;
 
-            _showFields = EditorGUILayout.Foldout(_showFields, "Passo 2: Informe os novos valores", guiStyle);
+            _showFields = EditorGUILayout.Foldout(_showFields, "Passo 1: Informe os novos valores", guiStyle);
 
             if (!_showFields) 
             {
@@ -65,6 +60,8 @@ namespace EditorToolsPractice
             EditorGUILayout.LabelField("\tInsira o novo nome");
             _newName = EditorGUILayout.TextField(_newName);
             
+            EditorGUILayout.Space();
+
             EditorGUILayout.EndHorizontal();
 
             EditorGUILayout.Space();
@@ -74,7 +71,16 @@ namespace EditorToolsPractice
             EditorGUILayout.LabelField("\tInsira o índice inicial");
             _initialIndex = EditorGUILayout.TextField(_initialIndex);
             
+            EditorGUILayout.Space();
+
             EditorGUILayout.EndHorizontal();
+
+            EditorGUILayout.Space();
+        }
+
+        private void DrawStep2()
+        {
+            EditorGUILayout.LabelField("Passo 2: Selecione os GameObjects na Hierarquia", EditorStyles.boldLabel);
 
             EditorGUILayout.Space();
         }
@@ -82,6 +88,27 @@ namespace EditorToolsPractice
         private void DrawStep3()
         {
             EditorGUILayout.LabelField("Passo 3: Clique no botão abaixo", EditorStyles.boldLabel);
+            EditorGUILayout.Space();
+        }
+
+        private void DrawRenameButton()
+        {
+            EditorGUILayout.BeginHorizontal();
+            EditorGUILayout.Space();
+            
+            if (GUILayout.Button("Renomear"))
+            {
+                int curIndex = int.Parse(_initialIndex);
+
+                foreach (GameObject gameObject in Selection.objects)
+                {
+                    gameObject.name = _newName + "_" + curIndex.ToString();
+                    curIndex++;
+                }
+            }
+
+            EditorGUILayout.Space();
+            EditorGUILayout.EndHorizontal();
         }
     }
 }
