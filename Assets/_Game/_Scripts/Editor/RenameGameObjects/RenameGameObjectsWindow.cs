@@ -11,6 +11,9 @@ namespace EditorToolsPractice
         // Valores dos text fields
         private string _newName;
         private string _initialIndex;
+        
+        // Foldout Passo 2
+        private bool _showFields;
 
         [MenuItem("Window/Rename GameObjects")]
         public static void ShowWindow()
@@ -39,14 +42,23 @@ namespace EditorToolsPractice
         {
             EditorGUILayout.Space();
 
-            EditorGUILayout.LabelField("Passo 1: Selecione os GameObjects que irão ser renomeados", EditorStyles.boldLabel);
+            EditorGUILayout.LabelField("Passo 1: Selecione os GameObjects na Hierarquia", EditorStyles.boldLabel);
 
             EditorGUILayout.Space();
         }
 
         private void DrawStep2()
         {
-            EditorGUILayout.LabelField("Passo 2: Informe os novos valores", EditorStyles.boldLabel);
+            GUIStyle guiStyle = new GUIStyle(EditorStyles.foldout);
+            guiStyle.fontStyle = FontStyle.Bold;
+
+            _showFields = EditorGUILayout.Foldout(_showFields, "Passo 2: Informe os novos valores", guiStyle);
+
+            if (!_showFields) 
+            {
+                EditorGUILayout.Space();
+                return;
+            }
 
             EditorGUILayout.BeginHorizontal();
             
