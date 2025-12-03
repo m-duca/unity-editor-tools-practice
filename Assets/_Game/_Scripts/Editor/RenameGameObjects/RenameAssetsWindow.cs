@@ -5,9 +5,9 @@ using UnityEngine;
 namespace EditorToolsPractice
 {
     /// <summary>
-    /// Janela para renomear um grupo específico de GameObjects na hierarquia
+    /// Janela para renomear um grupo específico de Assets
     /// </summary>
-    public class RenameGameObjectsWindow : EditorWindow
+    public class RenameAssetsWindow : EditorWindow
     {
         // Valores dos text fields
         private string _newName;
@@ -16,15 +16,15 @@ namespace EditorToolsPractice
         // Foldout Passo 2
         private bool _showFields;
 
-        [MenuItem("Window/Rename/GameObjects")]
+        [MenuItem("Window/Rename/Assets")]
         public static void ShowWindow()
         {
-            EditorWindow window = GetWindow(typeof(RenameGameObjectsWindow));
+            EditorWindow window = GetWindow(typeof(RenameAssetsWindow));
             window.maxSize = new Vector2(500, 150);
             window.minSize = window.maxSize;
 
             GUIContent guiContent = new GUIContent();
-            guiContent.text = "Rename GameObjects";
+            guiContent.text = "Rename Assets";
             window.titleContent = guiContent;
 
             window.Show();
@@ -50,38 +50,35 @@ namespace EditorToolsPractice
 
             _showFields = EditorGUILayout.Foldout(_showFields, "Passo 1: Informe os novos valores", guiStyle);
 
-            if (!_showFields)
+            if (_showFields)
             {
+                EditorGUILayout.BeginHorizontal();
+
+                EditorGUILayout.LabelField("\tInsira o novo nome");
+                _newName = EditorGUILayout.TextField(_newName);
+
                 EditorGUILayout.Space();
-                return;
+
+                EditorGUILayout.EndHorizontal();
+
+                EditorGUILayout.Space();
+
+                EditorGUILayout.BeginHorizontal();
+
+                EditorGUILayout.LabelField("\tInsira o índice inicial");
+                _initialIndex = EditorGUILayout.TextField(_initialIndex);
+
+                EditorGUILayout.Space();
+
+                EditorGUILayout.EndHorizontal();
             }
-
-            EditorGUILayout.BeginHorizontal();
-
-            EditorGUILayout.LabelField("\tInsira o novo nome");
-            _newName = EditorGUILayout.TextField(_newName);
-
-            EditorGUILayout.Space();
-
-            EditorGUILayout.EndHorizontal();
-
-            EditorGUILayout.Space();
-
-            EditorGUILayout.BeginHorizontal();
-
-            EditorGUILayout.LabelField("\tInsira o índice inicial");
-            _initialIndex = EditorGUILayout.TextField(_initialIndex);
-
-            EditorGUILayout.Space();
-
-            EditorGUILayout.EndHorizontal();
 
             EditorGUILayout.Space();
         }
 
         private void DrawStep2()
         {
-            EditorGUILayout.LabelField("Passo 2: Selecione os GameObjects na Hierarquia", EditorStyles.boldLabel);
+            EditorGUILayout.LabelField("Passo 2: Selecione os Assets em Project", EditorStyles.boldLabel);
 
             EditorGUILayout.Space();
         }
@@ -111,15 +108,23 @@ namespace EditorToolsPractice
                 {
                     int curIndex = int.Parse(_initialIndex);
 
-                    Undo.RegisterCompleteObjectUndo(Selection.objects, "Rename GameObjects");
+                    UnityEngine.Object[] selectedAssets = Selection.GetFiltered<UnityEngine.Object>(SelectionMode.Assets);
 
-                    foreach (GameObject gameObject in Selection.objects)
+                    Undo.RegisterCompleteObjectUndo(selectedAssets, "Rename Assets");
+
+                    foreach (UnityEngine.Object obj in selectedAssets)
                     {
-                        gameObject.name = $"{_newName}_{curIndex}";
+                        string path = AssetDatabase.GetAssetPath(obj);
+                        string newName = $"{_newName}_{curIndex}";
+                        AssetDatabase.RenameAsset(path, newName);
                         curIndex++;
                     }
+
+                    AssetDatabase.SaveAssets();
+                    AssetDatabase.Refresh();
                 }
             }
+
 
             EditorGUILayout.Space();
             EditorGUILayout.EndHorizontal();
