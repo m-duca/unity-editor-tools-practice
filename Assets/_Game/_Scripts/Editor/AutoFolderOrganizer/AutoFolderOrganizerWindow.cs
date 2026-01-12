@@ -1,9 +1,13 @@
 using UnityEngine;
 using UnityEditor;
 using System.Collections.Generic;
+using System.IO;
 
 namespace EditorToolsPractice
 {
+    /// <summary>
+    /// Janela que organiza de maneira automática os arquivos nas suas devidas pastas, seguindo extensão / caminho da pasta 
+    /// </summary> <summary>
     public class AutoFolderOrganizerWindow : EditorWindow
     {
         // Não serializadas
@@ -26,12 +30,12 @@ namespace EditorToolsPractice
         {
             { "Prefabs", new List<string>(){".prefab"} },
             { "Animations", new List<string>(){".anim"} },
-            { "Sprites", new List<string>(){".png, .jpeg"} }
+            { "Sprites", new List<string>(){".png", ".jpeg"} }
         };
 
         private int _organizersRowsCount;
         private List<OrganizerRow> _organizerRows;
-        private const string ASSETS_PATH = "Assets/";
+        private const string DEFAULT_PATH = "Assets/_Game/";
 
         private bool _isDirty = false;
 
@@ -75,7 +79,7 @@ namespace EditorToolsPractice
             _organizerRows = new List<OrganizerRow>();
 
             for (int i = 0; i < _organizersRowsCount; i++)
-                _organizerRows.Add(new OrganizerRow(i, ASSETS_PATH + _assetTypeNames[i]));
+                _organizerRows.Add(new OrganizerRow(i, DEFAULT_PATH + _assetTypeNames[i]));
         }
 
         private void OnGUI()
@@ -145,6 +149,38 @@ namespace EditorToolsPractice
             }
         }
 
+        private void DrawOrganizerControl()
+        {
+            if (GUILayout.Button("Organize"))
+                OrganizeFilesIntoFolders();
+        }
+
+        private void OrganizeFilesIntoFolders()
+        {
+            Dictionary<string, string> extensionsToFoldersMap = new ();
+
+            foreach(string name in _assetTypes.Keys)
+            {
+                for (int i = 0; i < _assetTypes[name].Count; i++)
+                {
+                    string folderPath = DEFAULT_PATH + name + "/";
+                    extensionsToFoldersMap.Add(_assetTypes[name][i], folderPath);
+                }
+            }
+
+            DirectoryInfo directoryInfo = new DirectoryInfo(DEFAULT_PATH);
+            foreach(string extension in extensionsToFoldersMap.Keys)
+            {
+                string query = $"*{extension}";
+                FileInfo[] files = directoryInfo.GetFiles(query);
+                foreach(FileInfo file in files)
+                {
+                    string filePath = extensionsToFoldersMap[extension] + file.Name;
+                    AssetDatabase.MoveAsset(DEFAULT_PATH + file.Name, filePath);
+                }
+            }
+        }
+
         #region Organizer
 
         private void ShowOrganizerGUI()
@@ -159,9 +195,10 @@ namespace EditorToolsPractice
                 DrawOrganizerRow(i);
 
             DrawAddAndRemoveControls();
-        }
 
-        
+            GUILayout.Space(40);
+            DrawOrganizerControl();
+        }
 
         private void DrawOrganizerRow(int curIndex)
         {
@@ -177,7 +214,7 @@ namespace EditorToolsPractice
             );
 
             if (EditorGUI.EndChangeCheck())
-                _organizerRows[curIndex].FolderPath = ASSETS_PATH + _assetTypeNames[_organizerRows[curIndex].SelectionIndex];
+                _organizerRows[curIndex].FolderPath = DEFAULT_PATH + _assetTypeNames[_organizerRows[curIndex].SelectionIndex];
 
             GUILayout.EndVertical();
             EditorGUILayout.Space();
@@ -194,7 +231,7 @@ namespace EditorToolsPractice
             _organizerRows[curIndex].Obj = EditorGUILayout.ObjectField(_organizerRows[curIndex].Obj, typeof(UnityEditor.DefaultAsset), true);
 
             if (EditorGUI.EndChangeCheck())
-                _organizerRows[curIndex].FolderPath = ASSETS_PATH + _organizerRows[curIndex].Obj.name;
+                _organizerRows[curIndex].FolderPath = DEFAULT_PATH + _organizerRows[curIndex].Obj.name;
             GUILayout.EndVertical();
             EditorGUILayout.Space();
             GUILayout.EndHorizontal();
