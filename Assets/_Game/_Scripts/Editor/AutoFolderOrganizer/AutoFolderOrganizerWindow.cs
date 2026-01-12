@@ -1,23 +1,26 @@
 using UnityEngine;
 using UnityEditor;
 using System.Collections.Generic;
-using System;
 
 namespace EditorToolsPractice
 {
     public class AutoFolderOrganizerWindow : EditorWindow
     {
         // Não serializadas
+        private enum AutoFolderTabType
+        {
+            Organizer = 0,
+            Extensions = 1
+        }
+
         private int _curTabIndex = 0;
-        private string[] _tabs = { "Organize", "Extensions"};
-        
-        private int _rowsCount;
-        private List<AssetTypeRow> _rows; 
-        
+        private string[] _tabs = { "Organize", "Extensions" };
+
+        private int _assetTypeRowsCount;
+        private List<AssetTypeRow> _assetTypeRows;
+
         private int _extensionsCount;
-        
-        private bool _isDirty = false;
-        
+
         private string[] _assetTypeNames;
         private Dictionary<string, List<string>> _assetTypes = new Dictionary<string, List<string>>
         {
@@ -26,11 +29,11 @@ namespace EditorToolsPractice
             { "Sprites", new List<string>(){".png, .jpeg"} }
         };
 
-        private enum AutoFolderTabType
-        {
-            Organizer = 0,
-            Extensions = 1
-        }
+        private int _organizersRowsCount;
+        private List<OrganizerRow> _organizerRows;
+        private const string ASSETS_PATH = "Assets/";
+
+        private bool _isDirty = false;
 
         [MenuItem("Window/Auto Organize Folders")]
         public static void ShowWindow()
@@ -49,11 +52,11 @@ namespace EditorToolsPractice
 
         private void InitializeFields()
         {
-            foreach(string key in _assetTypes.Keys)
-                _extensionsCount += _assetTypes[key].Count;                
+            foreach (string key in _assetTypes.Keys)
+                _extensionsCount += _assetTypes[key].Count;
 
-            _rowsCount = _extensionsCount;
-            _rows = new List<AssetTypeRow>();
+            _assetTypeRowsCount = _extensionsCount;
+            _assetTypeRows = new List<AssetTypeRow>();
 
             _assetTypeNames = new string[_extensionsCount];
             _assetTypes.Keys.CopyTo(_assetTypeNames, 0);
@@ -66,10 +69,16 @@ namespace EditorToolsPractice
                 {
                     int extensionsForNameCount = _assetTypes[name].Count;
 
-                    for (int j = 0; j  < extensionsForNameCount; j++)
-                        _rows.Add(new AssetTypeRow(_assetTypeNames[i], _assetTypes[_assetTypeNames[i]][j]));
+                    for (int j = 0; j < extensionsForNameCount; j++)
+                        _assetTypeRows.Add(new AssetTypeRow(_assetTypeNames[i], _assetTypes[_assetTypeNames[i]][j]));
                 }
             }
+
+            _organizersRowsCount = _assetTypes.Keys.Count;
+            _organizerRows = new List<OrganizerRow>();
+
+            for (int i = 0; i < _organizersRowsCount; i++)
+                _organizerRows.Add(new OrganizerRow(i, ASSETS_PATH + _assetTypeNames[i]));
         }
 
         private void OnGUI()
@@ -92,31 +101,74 @@ namespace EditorToolsPractice
 
         private void ShowOrganizerGUI()
         {
-            if (!_isDirty) 
-                return;
+            if (_isDirty)
+            {
+                _isDirty = false;
+                UpdateAssetTypes(_assetTypeNames.Length);
+            }
 
-            _isDirty = false;
-            UpdateAssetTypes(_assetTypeNames.Length);
+            for (int i = 0; i < _organizersRowsCount; i++)
+                DrawOrganizerRow(i);
+        }
+
+        private void DrawOrganizerRow(int curIndex)
+        {
+            GUILayout.BeginHorizontal();
+            EditorGUILayout.Space();
+            GUILayout.BeginVertical();
+            EditorGUILayout.LabelField("Asset Type");
+            EditorGUI.BeginChangeCheck();
+            _organizerRows[curIndex].SelectionIndex = EditorGUILayout.Popup(
+                "",
+                _organizerRows[curIndex].SelectionIndex,
+                _assetTypeNames
+            );
+
+            if (EditorGUI.EndChangeCheck())
+                _organizerRows[curIndex].FolderPath = ASSETS_PATH + _assetTypeNames[_organizerRows[curIndex].SelectionIndex];
+
+            GUILayout.EndVertical();
+            EditorGUILayout.Space();
+
+            GUILayout.BeginVertical();
+            EditorGUILayout.LabelField("Path to Folder");
+            _organizerRows[curIndex].FolderPath = EditorGUILayout.TextField(_organizerRows[curIndex].FolderPath);
+            GUILayout.EndVertical();
+            EditorGUILayout.Space();
+
+            GUILayout.BeginVertical();
+            EditorGUILayout.LabelField("Select Folder");
+            EditorGUI.BeginChangeCheck();
+            _organizerRows[curIndex].Obj = EditorGUILayout.ObjectField(_organizerRows[curIndex].Obj, typeof(UnityEditor.DefaultAsset), true);
+
+            if (EditorGUI.EndChangeCheck())
+                _organizerRows[curIndex].FolderPath = ASSETS_PATH + _organizerRows[curIndex].Obj.name;
+            GUILayout.EndVertical();
+            EditorGUILayout.Space();
+            GUILayout.EndHorizontal();
+            EditorGUILayout.LabelField("", GUI.skin.horizontalSlider);
         }
 
         private void UpdateAssetTypes(int curIndex)
         {
-            _assetTypes.Add(_rows[curIndex].Name, new List<string>() { });
-            _assetTypes[_rows[curIndex].Name].Add(_rows[curIndex].FileExtension);
+            _assetTypes.Add(_assetTypeRows[curIndex].Name, new List<string>() { });
+            _assetTypes[_assetTypeRows[curIndex].Name].Add(_assetTypeRows[curIndex].FileExtension);
 
             _extensionsCount = 0;
-
-            foreach(string key in _assetTypes.Keys)
+            foreach (string key in _assetTypes.Keys)
                 _extensionsCount += _assetTypes[key].Count;
+
+            _assetTypeNames = new string[_extensionsCount - 1];
+            _assetTypes.Keys.CopyTo(_assetTypeNames, 0);
         }
 
         private void ShowExtensionsGUI()
         {
-            for (int i = 0; i < _rowsCount; i++)
-                DrawRow(i);
+            for (int i = 0; i < _assetTypeRowsCount; i++)
+                DrawAssetTypeRow(i);
         }
 
-        private void DrawRow(int curIndex)
+        private void DrawAssetTypeRow(int curIndex)
         {
             GUILayout.BeginHorizontal();
             EditorGUILayout.Space();
@@ -124,8 +176,8 @@ namespace EditorToolsPractice
             EditorGUILayout.LabelField("Name");
             EditorGUI.BeginChangeCheck();
 
-            if (_rows != null)
-                _rows[curIndex].Name = EditorGUILayout.TextField(_rows[curIndex].Name);
+            if (_assetTypeRows != null)
+                _assetTypeRows[curIndex].Name = EditorGUILayout.TextField(_assetTypeRows[curIndex].Name);
 
             // Caso a Linha for atualizada
             if (EditorGUI.EndChangeCheck())
@@ -138,12 +190,12 @@ namespace EditorToolsPractice
             EditorGUILayout.LabelField("File Extension");
             EditorGUI.BeginChangeCheck();
 
-            if (_rows != null)
-                _rows[curIndex].FileExtension = EditorGUILayout.TextField(_rows[curIndex].FileExtension);
-            
-            if (EditorGUI.EndChangeCheck() && _assetTypes.ContainsKey(_rows[curIndex].Name))
+            if (_assetTypeRows != null)
+                _assetTypeRows[curIndex].FileExtension = EditorGUILayout.TextField(_assetTypeRows[curIndex].FileExtension);
+
+            if (EditorGUI.EndChangeCheck() && _assetTypes.ContainsKey(_assetTypeRows[curIndex].Name))
                 _isDirty = true;
-            
+
             GUILayout.EndVertical();
             EditorGUILayout.Space();
             GUILayout.EndHorizontal();
