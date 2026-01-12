@@ -45,10 +45,7 @@ namespace EditorToolsPractice
             window.Show();
         }
 
-        private void Awake()
-        {
-            InitializeFields();
-        }
+        private void Awake() => InitializeFields();
 
         private void InitializeFields()
         {
@@ -99,6 +96,57 @@ namespace EditorToolsPractice
             GUILayout.EndHorizontal();
         }
 
+        private void DrawAddAndRemoveControls()
+        {
+            GUILayout.BeginHorizontal();
+            GUILayout.Space(position.width - 80);    
+
+            DrawAddControl();
+            DrawRemoveControl();
+
+            GUILayout.EndHorizontal();
+        }
+
+        private void DrawAddControl()
+        {
+            GUIContent guiContentAdd = new GUIContent();
+            guiContentAdd.text = "+";
+            if (GUILayout.Button(guiContentAdd, GUILayout.ExpandWidth(false)))
+            {
+                if (_curTabIndex == (int)AutoFolderTabType.Organizer)
+                {
+                    _organizersRowsCount++;
+                    _organizerRows.Add(new OrganizerRow(0, ""));
+                }
+                else
+                {
+                    _assetTypeRowsCount++;
+                    _assetTypeRows.Add(new AssetTypeRow("", ""));
+                }
+            }
+        }
+
+        private void DrawRemoveControl()
+        {
+            GUIContent guiContentRemove = new GUIContent();
+            guiContentRemove.text = "—";
+            if (GUILayout.Button(guiContentRemove, GUILayout.ExpandWidth(false)))
+            {
+                if (_curTabIndex == (int)AutoFolderTabType.Organizer)
+                {
+                    _organizersRowsCount--;
+                    _organizerRows.RemoveAt(_organizerRows.Count - 1);
+                }
+                else
+                {
+                    _assetTypeRowsCount--;
+                    _assetTypeRows.RemoveAt(_assetTypeRows.Count - 1);
+                }
+            }
+        }
+
+        #region Organizer
+
         private void ShowOrganizerGUI()
         {
             if (_isDirty)
@@ -109,7 +157,11 @@ namespace EditorToolsPractice
 
             for (int i = 0; i < _organizersRowsCount; i++)
                 DrawOrganizerRow(i);
+
+            DrawAddAndRemoveControls();
         }
+
+        
 
         private void DrawOrganizerRow(int curIndex)
         {
@@ -149,6 +201,10 @@ namespace EditorToolsPractice
             EditorGUILayout.LabelField("", GUI.skin.horizontalSlider);
         }
 
+        #endregion
+
+        #region Extensions
+
         private void UpdateAssetTypes(int curIndex)
         {
             _assetTypes.Add(_assetTypeRows[curIndex].Name, new List<string>() { });
@@ -166,6 +222,8 @@ namespace EditorToolsPractice
         {
             for (int i = 0; i < _assetTypeRowsCount; i++)
                 DrawAssetTypeRow(i);
+        
+            DrawAddAndRemoveControls();
         }
 
         private void DrawAssetTypeRow(int curIndex)
@@ -201,5 +259,7 @@ namespace EditorToolsPractice
             GUILayout.EndHorizontal();
             EditorGUILayout.LabelField("", GUI.skin.horizontalSlider);
         }
+
+        #endregion
     }
 }
