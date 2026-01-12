@@ -10,7 +10,6 @@ namespace EditorToolsPractice
     {
         private int _curOptionIndex;
         private string[] _options = { "Option1", "Option2", "Option3" };
-
         [MenuItem("Window/Examples/PopUp")]
         public static void ShowWindow()
         {

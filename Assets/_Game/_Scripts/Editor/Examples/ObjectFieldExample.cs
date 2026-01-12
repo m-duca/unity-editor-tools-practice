@@ -32,7 +32,7 @@ namespace EditorToolsPractice
 
         private void SetupObjectField()
         {
-            _obj = EditorGUILayout.ObjectField(_obj, typeof(GameObject), true);   
+            _obj = EditorGUILayout.ObjectField(_obj, typeof(GameObject), true);
         }
     }
 }
