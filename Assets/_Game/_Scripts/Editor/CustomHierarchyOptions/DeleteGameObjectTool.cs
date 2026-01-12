@@ -22,7 +22,7 @@ namespace EditorToolsPractice
             string deleteIconPath = "Icons/Spr_Icon_DeleteGameObject";
             string tooltip = $"Delete {gameObject.name}";
 
-            HierarchyGUIUtils.DrawButtonWithTexture(rect.x + x, rect.y + y, width, height, deleteIconPath, () => { DeleteGameObject(gameObject); }, 
+            HierarchyGUIDrawer.DrawButtonWithTexture(rect.x + x, rect.y + y, width, height, deleteIconPath, () => { DeleteGameObject(gameObject); }, 
                                                         gameObject, tooltip);
         }
 

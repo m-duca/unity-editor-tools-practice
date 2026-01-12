@@ -22,7 +22,7 @@ namespace EditorToolsPractice
             string createPrefabIconPath = "Icons/Spr_Icon_CreatePrefab";
             string tooltip = $"Create prefab of {gameObject.name}";
 
-            HierarchyGUIUtils.DrawButtonWithTexture(rect.x + x, rect.y + y, width, height, createPrefabIconPath, () => { CreatePrefab(gameObject); },
+            HierarchyGUIDrawer.DrawButtonWithTexture(rect.x + x, rect.y + y, width, height, createPrefabIconPath, () => { CreatePrefab(gameObject); },
                                                         gameObject, tooltip);
         }
 

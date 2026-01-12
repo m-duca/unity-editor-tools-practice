@@ -7,7 +7,7 @@ namespace EditorToolsPractice
     /// <summary>
     /// Coleção de métodos de utilidade para criação de elementos na GUI da hierarquia
     /// </summary>
-    public class HierarchyGUIUtils
+    public class HierarchyGUIDrawer
     {
         public static Rect DrawRect(float x, float y, float width, float height)
         {
