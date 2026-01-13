@@ -1,6 +1,7 @@
 using UnityEngine;
 using UnityEditor;
 using System.Collections.Generic;
+using System;
 
 namespace EditorToolsPractice
 {
@@ -23,7 +24,16 @@ namespace EditorToolsPractice
 
             AssetDatabase.CreateFolder("Assets/_Game/Prefabs", "Favorites");
             FavoritedObjects.Clear();
-            EditorPrefs.DeleteAll();
+            EditorApplication.quitting += DeleteFlags;
+        }
+
+        private static void DeleteFlags()
+        {
+            foreach(GameObject gameObject in FavoritedObjects)
+            {
+                string flagName = $"favorite_{gameObject.name}";
+                EditorPrefs.DeleteKey(flagName);
+            }
         }
 
         public static void AddToFavorites(GameObject gameObject)

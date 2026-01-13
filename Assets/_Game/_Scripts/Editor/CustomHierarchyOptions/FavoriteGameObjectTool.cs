@@ -37,7 +37,7 @@ namespace EditorToolsPractice
 
             string tooltip = "Add to Favorites";
 
-            HierarchyGUIDrawer.DrawButtonWithTexture(rect.x + x, rect.y + y, width, height, focusIconPath, () => { ToggleIsFavoritedState(gameObject); } , 
+            HierarchyGUIDrawer.DrawButtonWithTexture(rect.x + x, rect.y + y, width, height, focusIconPath, () => { ToggleIsFavoritedState(gameObject); },
                                                         gameObject, tooltip);
         }
 
