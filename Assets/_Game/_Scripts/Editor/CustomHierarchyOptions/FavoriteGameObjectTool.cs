@@ -46,9 +46,9 @@ namespace EditorToolsPractice
             IsFavorited = !IsFavorited;
 
             if (IsFavorited)
-                FavoriteGameObjetsExecutioner.AddToFavorites(gameObject);
+                FavoriteGameObjectsExecutioner.AddToFavorites(gameObject);
             else
-                FavoriteGameObjetsExecutioner.RemoveFromFavorites(gameObject);
+                FavoriteGameObjectsExecutioner.RemoveFromFavorites(gameObject);
         }
     }
 }

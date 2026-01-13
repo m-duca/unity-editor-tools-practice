@@ -4,28 +4,41 @@ using System.Collections.Generic;
 
 namespace EditorToolsPractice
 {
-    public class FavoriteGameObjetsExecutioner : EditorWindow
+    /// <summary>
+    /// Executa toda a lógica de adicionar / remover gameObjects favoritados
+    /// </summary>
+    [InitializeOnLoad]
+    public class FavoriteGameObjectsExecutioner
     {
         private const string PATH_FOLDER_FAVORITES = "Assets/_Game/Prefabs/Favorites";
-        private static List<GameObject> _favoritedObjects = new();
+        public static List<GameObject> FavoritedObjects = new();
 
-        public static void AddToFavorites(GameObject gameObject)
+        [InitializeOnLoadMethod]
+        public static void Setup()
         {
             bool folderExists = AssetDatabase.IsValidFolder(PATH_FOLDER_FAVORITES);
 
-            if (!folderExists)
-            {
-                Debug.LogError($"Pasta de favoritos não encontrada no caminho:\n{PATH_FOLDER_FAVORITES}");
-                Debug.Log("Criando nova pasta...");
+            if (folderExists)
+                AssetDatabase.DeleteAsset(PATH_FOLDER_FAVORITES);
 
-                AssetDatabase.CreateFolder("Assets/_Game/Prefabs", "Favorites");
-            }
+            AssetDatabase.CreateFolder("Assets/_Game/Prefabs", "Favorites");
+            FavoritedObjects.Clear();
+            EditorPrefs.DeleteAll();
+        }
+
+        public static void AddToFavorites(GameObject gameObject)
+        {
+            if (FavoritedObjects.Count >= FavoriteGameObjectsWindow.MaxSize)
+            {
+                FavoriteGameObjectTool.IsFavorited = false;
+                return;
+            } 
 
             string prefabName = $"Prefab_{gameObject.name.Replace(" ", "")}.prefab";
             string prefabPath = $"{PATH_FOLDER_FAVORITES}/{prefabName}";
             AssetDatabase.DeleteAsset(prefabPath);
             GameObject prefab = PrefabUtility.SaveAsPrefabAsset(gameObject, prefabPath);
-            _favoritedObjects.Add(prefab);
+            FavoritedObjects.Add(prefab);
         }
 
         public static void RemoveFromFavorites(GameObject gameObject)
@@ -37,7 +50,7 @@ namespace EditorToolsPractice
             AssetDatabase.SaveAssets();
             AssetDatabase.Refresh();
 
-            _favoritedObjects.RemoveAll(obj => obj != null && obj.name == prefabName);
+            FavoritedObjects.RemoveAll(obj => obj != null && obj.name == prefabName);
 
             Debug.Log($"<color=cyan><b>{prefabName} foi removido!</b></color>");
         }
