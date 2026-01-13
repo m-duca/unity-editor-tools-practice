@@ -20,8 +20,8 @@ namespace EditorToolsPractice
         private static List<string> _aspectRatios = new List<string>()
         {
             _applicationDataPath + "Free Aspect.png",
-            _applicationDataPath + "16:9 Aspect.png",
-            _applicationDataPath + "16:10 Aspect.png",
+            _applicationDataPath + "Aspect 16x9.png",
+            _applicationDataPath + "Aspect 16x10.png",
         };
 
         static AspectRatioPreviewTool()
