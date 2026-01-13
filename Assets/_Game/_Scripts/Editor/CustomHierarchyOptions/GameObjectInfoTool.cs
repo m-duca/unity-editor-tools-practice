@@ -31,7 +31,7 @@ namespace EditorToolsPractice
             if (info == string.Empty)
                 info = infoFallbackText;
 
-            HierarchyGUIUtils.DrawButtonWithTexture(rect.x + x, rect.y + y, width, height, infoIconPath, () => { }, gameObject, info);
+            HierarchyGUIDrawer.DrawButtonWithTexture(rect.x + x, rect.y + y, width, height, infoIconPath, () => { }, gameObject, info);
         }
     }
 }
