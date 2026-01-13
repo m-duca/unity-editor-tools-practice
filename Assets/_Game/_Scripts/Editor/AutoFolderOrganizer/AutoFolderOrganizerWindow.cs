@@ -39,7 +39,7 @@ namespace EditorToolsPractice
 
         private bool _isDirty = false;
 
-        [MenuItem("Window/Auto Organize Folders")]
+        [MenuItem("CustomTools/Auto Organize Folders")]
         public static void ShowWindow()
         {
             EditorWindow window = GetWindow(typeof(AutoFolderOrganizerWindow));

@@ -16,7 +16,7 @@ namespace EditorToolsPractice
         // Foldout Passo 2
         private bool _showFields;
 
-        [MenuItem("Window/Rename/Assets")]
+        [MenuItem("CustomTools/Rename/Assets")]
         public static void ShowWindow()
         {
             EditorWindow window = GetWindow(typeof(RenameAssetsWindow));
