@@ -8,7 +8,7 @@ namespace EditorToolsPractice
     /// </summary>
     public class MissingReferencesWindow : EditorWindow
     {
-        [MenuItem("Window/Find Missing References")]
+        [MenuItem("CustomTools/Find Missing References")]
         public static void ShowWindow()
         {
             EditorWindow window = GetWindow(typeof(MissingReferencesWindow));
