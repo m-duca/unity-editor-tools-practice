@@ -1,4 +1,3 @@
-using System.Numerics;
 using UnityEditor;
 using UnityEngine;
 using System.Collections.Generic;
@@ -25,6 +24,8 @@ namespace EditorToolsPractice
         public static void ShowWindow()
         {
             EditorWindow window = GetWindow(typeof(GameObjectDebuggerWindow));
+            window.minSize = new Vector2(500, 950);
+
             GUIContent guiContent = new GUIContent();
             guiContent.text = "GameObject Debugger";
 
@@ -97,12 +98,12 @@ namespace EditorToolsPractice
             if (_showTransform)
             {
                 Transform transform = _selectedGameObject.transform;
-                UnityEngine.Vector3 lastPos = transform.position;
-                UnityEngine.Quaternion lastRotation = transform.rotation;
-                UnityEngine.Vector3 lastScale = transform.localScale;
+                Vector3 lastPos = transform.position;
+                Quaternion lastRotation = transform.rotation;
+                Vector3 lastScale = transform.localScale;
 
                 transform.position = EditorGUILayout.Vector3Field("Position", transform.position);
-                transform.rotation = UnityEngine.Quaternion.Euler(EditorGUILayout.Vector3Field("Rotation", transform.rotation.eulerAngles));
+                transform.rotation = Quaternion.Euler(EditorGUILayout.Vector3Field("Rotation", transform.rotation.eulerAngles));
                 transform.localScale = EditorGUILayout.Vector3Field("Scale", transform.localScale);
 
                 if (lastPos != transform.position)
@@ -166,9 +167,12 @@ namespace EditorToolsPractice
                 }
                 else
                 {
-                    GUILayout.Label("No Rigidbody founed.", EditorStyles.boldLabel);
+                    GUILayout.Label("No Rigidbody founded.", EditorStyles.boldLabel);
                 }
             }
+
+            if (GUILayout.Button("👁️Focus on SceneView"))
+                FocusGameObjectTool.FocusGameObject(_selectedGameObject);
         }
 
         #endregion
@@ -190,7 +194,7 @@ namespace EditorToolsPractice
 
         private void RegisterIntoLog(string newText)
         {
-            _editsLog += "🔍︎" + newText + "\n";
+            _editsLog += $"🔍︎{_selectedGameObject.name}:\n{newText}\n";
         }
 
         #endregion
