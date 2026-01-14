@@ -1,3 +1,4 @@
+using System.Numerics;
 using UnityEditor;
 using UnityEngine;
 using System.Collections.Generic;
@@ -17,6 +18,8 @@ namespace EditorToolsPractice
         private bool _showTransform = true;
         private bool _showRenderer = true;
         private bool _showRigidbody = true;
+        
+        private string _editsLog = String.Empty;
 
         [MenuItem("CustomTools/GameObject Debugger")]
         public static void ShowWindow()
@@ -46,7 +49,11 @@ namespace EditorToolsPractice
             
             if(_selectedGameObject != null)
                 DrawSelectedGameObject();
+            
+            DrawLogsInfo();
         }
+
+        #region Busca e Filtragem
 
         private void ApplyFilters()
         {
@@ -90,9 +97,22 @@ namespace EditorToolsPractice
             if (_showTransform)
             {
                 Transform transform = _selectedGameObject.transform;
+                UnityEngine.Vector3 lastPos = transform.position;
+                UnityEngine.Quaternion lastRotation = transform.rotation;
+                UnityEngine.Vector3 lastScale = transform.localScale;
+
                 transform.position = EditorGUILayout.Vector3Field("Position", transform.position);
-                transform.rotation = Quaternion.Euler(EditorGUILayout.Vector3Field("Rotation", transform.rotation.eulerAngles));
+                transform.rotation = UnityEngine.Quaternion.Euler(EditorGUILayout.Vector3Field("Rotation", transform.rotation.eulerAngles));
                 transform.localScale = EditorGUILayout.Vector3Field("Scale", transform.localScale);
+
+                if (lastPos != transform.position)
+                    RegisterIntoLog($"transform.position changes: {transform.position}");
+                
+                if (lastRotation != transform.rotation)
+                    RegisterIntoLog($"transform.rotation changes: {transform.rotation}");
+                
+                if (lastScale != transform.localScale)
+                    RegisterIntoLog($"transform.localScale changes: {transform.localScale}");
             }
 
             _showRenderer = EditorGUILayout.Foldout(_showRenderer, "🖼️Renderer");
@@ -100,7 +120,13 @@ namespace EditorToolsPractice
             {
                 Renderer renderer = _selectedGameObject.GetComponent<Renderer>();
                 if (renderer != null)
+                {
+                    bool lastActiveState = renderer.enabled;
                     renderer.enabled = EditorGUILayout.Toggle("Renderer Enabled", renderer.enabled);
+
+                    if (lastActiveState != renderer.enabled)
+                        RegisterIntoLog($"renderer active state changes: {renderer.enabled}");
+                }
                 else
                     GUILayout.Label("No Renderer founded.", EditorStyles.boldLabel);
             }
@@ -111,11 +137,32 @@ namespace EditorToolsPractice
                 Rigidbody rb = _selectedGameObject.GetComponent<Rigidbody>();
                 if (rb != null)
                 {
+                    float lastMass = rb.mass;
+                    float lastLinearDamping = rb.linearDamping;
+                    float lastAngularDamping = rb.angularDamping;
+                    bool lastUseGravity = rb.useGravity;
+                    bool lastIsKinematic = rb.isKinematic;
+
                     rb.mass = EditorGUILayout.FloatField("Mass", rb.mass);
                     rb.linearDamping = EditorGUILayout.FloatField("Linear Damping", rb.linearDamping);
                     rb.angularDamping = EditorGUILayout.FloatField("Angular Damping", rb.angularDamping);
                     rb.useGravity = EditorGUILayout.Toggle("Gravity Enabled", rb.useGravity);
                     rb.isKinematic = EditorGUILayout.Toggle("Is Kinematic", rb.isKinematic);
+
+                    if (lastMass != rb.mass)
+                        RegisterIntoLog($"rb.mass changes: {rb.mass}");
+                    
+                    if (lastLinearDamping != rb.linearDamping)
+                        RegisterIntoLog($"rb.linearDamping changes: {rb.linearDamping}");
+                    
+                    if (lastAngularDamping != rb.angularDamping)
+                        RegisterIntoLog($"rb.angularDamping changes: {rb.angularDamping}");
+
+                    if (lastUseGravity != rb.useGravity)
+                        RegisterIntoLog($"rb.useGravity changes: {rb.useGravity}");
+
+                    if (lastIsKinematic != rb.isKinematic)
+                        RegisterIntoLog($"rb.isKinematic changes: {rb.isKinematic}");
                 }
                 else
                 {
@@ -123,5 +170,29 @@ namespace EditorToolsPractice
                 }
             }
         }
+
+        #endregion
+
+        #region Logs 
+
+        private void DrawLogsInfo()
+        {
+            GUILayout.Space(20);
+            GUILayout.Label("📄Edits Log", EditorStyles.boldLabel);
+            _editsLog = EditorGUILayout.TextArea(_editsLog, GUILayout.Height(100));
+
+            if (GUILayout.Button("Clear Edits Log"))
+            {
+                _editsLog = String.Empty;
+                Repaint();                
+            }
+        }
+
+        private void RegisterIntoLog(string newText)
+        {
+            _editsLog += "🔍︎" + newText + "\n";
+        }
+
+        #endregion
     }
 }
