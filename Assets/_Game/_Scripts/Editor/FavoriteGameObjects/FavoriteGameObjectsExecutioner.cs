@@ -19,17 +19,22 @@ namespace EditorToolsPractice
         {
             bool folderExists = AssetDatabase.IsValidFolder(PATH_FOLDER_FAVORITES);
 
-            if (folderExists)
-                AssetDatabase.DeleteAsset(PATH_FOLDER_FAVORITES);
+            if (!folderExists)
+            {
+                AssetDatabase.CreateFolder("Assets/_Game/Prefabs", "Favorites");
+                AssetDatabase.SaveAssets();
+                AssetDatabase.Refresh();
+            }
 
-            AssetDatabase.CreateFolder("Assets/_Game/Prefabs", "Favorites");
             FavoritedObjects.Clear();
+
+            EditorApplication.quitting -= DeleteFlags;
             EditorApplication.quitting += DeleteFlags;
         }
 
         private static void DeleteFlags()
         {
-            foreach(GameObject gameObject in FavoritedObjects)
+            foreach (GameObject gameObject in FavoritedObjects)
             {
                 string flagName = $"favorite_{gameObject.name}";
                 EditorPrefs.DeleteKey(flagName);
@@ -42,7 +47,7 @@ namespace EditorToolsPractice
             {
                 FavoriteGameObjectTool.IsFavorited = false;
                 return;
-            } 
+            }
 
             string prefabName = $"Prefab_{gameObject.name.Replace(" ", "")}.prefab";
             string prefabPath = $"{PATH_FOLDER_FAVORITES}/{prefabName}";

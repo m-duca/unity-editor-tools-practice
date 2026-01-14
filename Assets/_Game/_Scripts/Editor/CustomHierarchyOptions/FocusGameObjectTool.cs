@@ -26,7 +26,7 @@ namespace EditorToolsPractice
                                                         gameObject, tooltip);
         }
 
-        private static void FocusGameObject(GameObject gameObject)
+        public static void FocusGameObject(GameObject gameObject)
         {
             Selection.activeGameObject = gameObject;
             SceneView.FrameLastActiveSceneView();
