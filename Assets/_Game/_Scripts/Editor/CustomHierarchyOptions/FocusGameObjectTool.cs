@@ -22,11 +22,11 @@ namespace EditorToolsPractice
             string focusIconPath = "Icons/Spr_Icon_Focus";
             string tooltip = $"Focus view on {gameObject.name}";
 
-            HierarchyGUIUtils.DrawButtonWithTexture(rect.x + x, rect.y + y, width, height, focusIconPath, () => { FocusGameObject(gameObject); } , 
+            HierarchyGUIDrawer.DrawButtonWithTexture(rect.x + x, rect.y + y, width, height, focusIconPath, () => { FocusGameObject(gameObject); } , 
                                                         gameObject, tooltip);
         }
 
-        private static void FocusGameObject(GameObject gameObject)
+        public static void FocusGameObject(GameObject gameObject)
         {
             Selection.activeGameObject = gameObject;
             SceneView.FrameLastActiveSceneView();

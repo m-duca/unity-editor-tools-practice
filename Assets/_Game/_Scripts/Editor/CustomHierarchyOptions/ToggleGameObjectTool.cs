@@ -20,7 +20,7 @@ namespace EditorToolsPractice
             float width = 10;
             float height = 10;
 
-            HierarchyGUIUtils.DrawButtonWithToggle(id, rect.x - offsetX, rect.y - offsetY, width, height);
+            HierarchyGUIDrawer.DrawButtonWithToggle(id, rect.x - offsetX, rect.y - offsetY, width, height);
         }
     }
 }
