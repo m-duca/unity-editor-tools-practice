@@ -14,6 +14,9 @@ namespace EditorToolsPractice
         private string _tagFilter = String.Empty;
         private string _componentFilter = String.Empty;
 
+        private bool _showTransform = true;
+        private bool _showRenderer = true;
+        private bool _showRigidbody = true;
 
         [MenuItem("CustomTools/GameObject Debugger")]
         public static void ShowWindow()
@@ -32,8 +35,7 @@ namespace EditorToolsPractice
 
         private void OnGUI()
         {
-            GUILayout.Label("Custom GameObject Debugger", EditorStyles.boldLabel);
-            GUILayout.Label("Search & Filter", EditorStyles.boldLabel);
+            GUILayout.Label("🔎Search & Filter", EditorStyles.boldLabel);
 
             _searchQuery = EditorGUILayout.TextField("Search by Name", _searchQuery);
             _tagFilter = EditorGUILayout.TagField("Filter by Tag", _tagFilter);
@@ -41,6 +43,9 @@ namespace EditorToolsPractice
 
             ApplyFilters();
             ShowFilteredGameObjects();
+            
+            if(_selectedGameObject != null)
+                DrawSelectedGameObject();
         }
 
         private void ApplyFilters()
@@ -73,6 +78,49 @@ namespace EditorToolsPractice
             else
             {
                 GUILayout.Label("No gameObjects matched the filters criteria.", EditorStyles.boldLabel);
+            }
+        }
+
+        private void DrawSelectedGameObject()
+        {
+            GUILayout.Space(10);
+            GUILayout.Label($"Current GameObject: {_selectedGameObject.name}", EditorStyles.boldLabel);
+
+            _showTransform = EditorGUILayout.Foldout(_showTransform, "🔄Transform");
+            if (_showTransform)
+            {
+                Transform transform = _selectedGameObject.transform;
+                transform.position = EditorGUILayout.Vector3Field("Position", transform.position);
+                transform.rotation = Quaternion.Euler(EditorGUILayout.Vector3Field("Rotation", transform.rotation.eulerAngles));
+                transform.localScale = EditorGUILayout.Vector3Field("Scale", transform.localScale);
+            }
+
+            _showRenderer = EditorGUILayout.Foldout(_showRenderer, "🖼️Renderer");
+            if (_showRenderer)
+            {
+                Renderer renderer = _selectedGameObject.GetComponent<Renderer>();
+                if (renderer != null)
+                    renderer.enabled = EditorGUILayout.Toggle("Renderer Enabled", renderer.enabled);
+                else
+                    GUILayout.Label("No Renderer founded.", EditorStyles.boldLabel);
+            }
+
+            _showRigidbody = EditorGUILayout.Foldout(_showRigidbody, "⚛️Rigidbody");
+            if (_showRigidbody)
+            {
+                Rigidbody rb = _selectedGameObject.GetComponent<Rigidbody>();
+                if (rb != null)
+                {
+                    rb.mass = EditorGUILayout.FloatField("Mass", rb.mass);
+                    rb.linearDamping = EditorGUILayout.FloatField("Linear Damping", rb.linearDamping);
+                    rb.angularDamping = EditorGUILayout.FloatField("Angular Damping", rb.angularDamping);
+                    rb.useGravity = EditorGUILayout.Toggle("Gravity Enabled", rb.useGravity);
+                    rb.isKinematic = EditorGUILayout.Toggle("Is Kinematic", rb.isKinematic);
+                }
+                else
+                {
+                    GUILayout.Label("No Rigidbody founed.", EditorStyles.boldLabel);
+                }
             }
         }
     }
